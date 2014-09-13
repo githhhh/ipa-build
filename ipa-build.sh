@@ -12,8 +12,8 @@
 #exit
 
 
-
-
+workspaceExt=".xcworkspace"
+tempPath=""
 
 #工程绝对路径
 #cd $1
@@ -41,17 +41,50 @@ rm -rf ${build_path}
 
 echo "***clean build_path success***"
 fi
-#清理工程
-xcodebuild clean || exit
+
 #去掉xcode源码末尾的空格
 #find . -name "*.[hm]" | xargs sed -Ee 's/ +$//g' -i ""
 
+
+#find .xcworkspace
+for workspacePath in `find ${project_path} -name "$project_name$workspaceExt" -print`
+do
+tempPath=${workspacePath}
+break
+done
+
+if [ "$tempPath" == "" ];then
+
+#清理工程
+xctool  -project ${project_name}.xcodeproj \
+        -scheme ${project_name} \
+        clean || exit
+
 #编译工程  Distribution  Release Debug
-xcodebuild  -configuration Debug  -workspace ${project_path}/${project_name}.xcworkspace \
--scheme ${project_name} \
-ONLY_ACTIVE_ARCH=NO \
-TARGETED_DEVICE_FAMILY=1 \
-DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos  || exit
+xctool  -configuration Debug \
+        -project ${project_path}/${project_name}.xcodeproj \
+        -scheme ${project_name} \
+         ONLY_ACTIVE_ARCH=NO \
+        TARGETED_DEVICE_FAMILY=1 \
+        DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos || exit
+
+else
+
+#清理工程
+xctool  -workspace ${project_name}.xcworkspace \
+        -scheme ${project_name} \
+        clean || exit
+
+#编译工程  Distribution  Release Debug
+xctool  -configuration Debug  -workspace ${project_path}/${project_name}.xcworkspace \
+        -scheme ${project_name} \
+        ONLY_ACTIVE_ARCH=NO \
+        TARGETED_DEVICE_FAMILY=1 \
+        DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos  || exit
+
+fi
+
+
 
 
 if [ -d ./ipa-build ];then
