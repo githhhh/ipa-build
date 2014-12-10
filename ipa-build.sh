@@ -15,6 +15,8 @@
 workspaceExt=".xcworkspace"
 tempPath=""
 
+
+
 #工程绝对路径
 #cd $1
 project_path=$(pwd)
@@ -58,10 +60,12 @@ if [ "$tempPath" == "" ];then
 #清理工程
 xctool  -project ${project_name}.xcodeproj \
         -scheme ${project_name} \
+        -sdk iphoneos \
         clean || exit
 
 #编译工程  Distribution  Release Debug
 xctool  -configuration Debug \
+        -sdk iphoneos \
         -project ${project_path}/${project_name}.xcodeproj \
         -scheme ${project_name} \
          ONLY_ACTIVE_ARCH=NO \
@@ -73,11 +77,13 @@ else
 #清理工程
 xctool  -workspace ${project_name}.xcworkspace \
         -scheme ${project_name} \
+        -sdk iphoneos \
         clean || exit
 
 #编译工程  Distribution  Release Debug
 xctool  -configuration Debug  -workspace ${project_path}/${project_name}.xcworkspace \
         -scheme ${project_name} \
+        -sdk iphoneos \
         ONLY_ACTIVE_ARCH=NO \
         TARGETED_DEVICE_FAMILY=1 \
         DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos  || exit
