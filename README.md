@@ -1,8 +1,13 @@
-ipa-build  自动打包ipa
-=========
 
+##  ipa-build 自动打包ipa
 
-    使用方法：
-            sudo   chmod 777 ipa_build.sh 添加脚本文件执行权限
-            cd 进入项目目录，下载改脚本执行上面脚本在终端。拖入终端项目目录下。
-            回车执行完成后 会自东将ipa 包拷入桌面。
+* 请确保Xcode中的证书配置正确 *
+
+### 使用
+
+```
+ $ sudo chmod 777 path-to/ipa_build.sh
+ $ cd project-rootDir
+ $ path-to/ipa_build.sh 
+```
+最后一步回车执行, 成功后, ipa 包将被拷贝到 桌面。
