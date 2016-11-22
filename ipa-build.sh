@@ -38,7 +38,7 @@ cd $project_path
 
 #删除bulid目录
 if  [ -d ${build_path} ];then
-    rm -rf ${build_path}
+   rm -rf ${build_path}
 fi
 
 #去掉xcode源码末尾的空格
@@ -47,43 +47,32 @@ fi
 #find .xcworkspace
 for workspacePath in `find ${project_path} -name "${project_name}.xcworkspace" -print`
 do
-    findWorkspacePath=${workspacePath}
-    break
+   findWorkspacePath=${workspacePath}
+   break
 done
 
 if [ "$findWorkspacePath" == "" ];then
-    #清理工程
-    xcodebuild  -project ${project_name}.xcodeproj \
-                -scheme ${project_name} \
-                -sdk iphoneos \
-                clean || exit
+   #清理工程
+   xcodebuild  -project ${project_name}.xcodeproj \
+               -scheme ${project_name} \
+               -sdk iphoneos \
+               clean || exit
 
-    #编译工程  Distribution  Release Debug
-    xcodebuild  -configuration $configurationModel \
-                -sdk iphoneos \
-                -project ${project_path}/${project_name}.xcodeproj \
-                -scheme ${project_name} \
-                 ONLY_ACTIVE_ARCH=NO \
-                TARGETED_DEVICE_FAMILY=1 \
-                DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos || exit
-
+  xcodebuild  -configuration $configurationModel \
+			   -project "${project_path}/${project_name}.xcodeproj" \
+			   -scheme ${project_name} \
+			   SYMROOT="${PWD}/build" || exit
 else
+   #清理工程
+   xcodebuild  -workspace ${project_name}.xcworkspace \
+               -scheme ${project_name} \
+               -sdk iphoneos \
+               clean || exit
 
-    #清理工程
-    xcodebuild  -workspace ${project_name}.xcworkspace \
-                -scheme ${project_name} \
-                -sdk iphoneos \
-                clean || exit
-
-    #编译工程  Distribution  Release Debug
-    xcodebuild  -configuration $configurationModel
-                -workspace ${project_path}/${project_name}.xcworkspace \
-                -scheme ${project_name} \
-                -sdk iphoneos \
-                ONLY_ACTIVE_ARCH=NO \
-                TARGETED_DEVICE_FAMILY=1 \
-                DEPLOYMENT_LOCATION=YES CONFIGURATION_BUILD_DIR=${project_path}/build/Release-iphoneos  || exit
-
+   xcodebuild  -configuration $configurationModel \
+			   -workspace "${project_name}.xcworkspace" \
+			   -scheme ${project_name} \
+			   SYMROOT="${PWD}/build" || exit
 fi
 
 
@@ -97,7 +86,7 @@ cd $build_path
 
 mkdir -p ipa-build/Payload
 
-cp -r ./Release-iphoneos/*.app ./ipa-build/Payload/
+cp -r ./Debug-iphoneos/*.app ./ipa-build/Payload/
 
 cd ipa-build
 
