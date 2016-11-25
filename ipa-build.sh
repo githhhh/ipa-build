@@ -13,15 +13,15 @@ configurationModel=""
 #添加configuration参数
 if [ -z $1 ];then
     echo "\n [!] Miss option paramter \n"
-    echo "\t\t Did you option: Debug、Release 、Archive \n"
+    echo "\t\t Did you option: Debug、Release 、AdHoc \n"
     exit
 else
-    configuration_array=("Debug","Release","Archive")
+    configuration_array=("Debug","Release","AdHoc")
     if echo "${configuration_array[@]}" | grep -w "$1" &>/dev/null; then
         configurationModel=$1
     else
         echo "\n [!] Unknown option: '$1'\n"
-        echo "\t\t Did you mean: Debug、Release 、Archive \n"
+        echo "\t\t Did you mean: Debug、Release 、AdHoc \n"
         exit
     fi
 fi
@@ -86,7 +86,7 @@ cd $build_path
 
 mkdir -p ipa-build/Payload
 
-cp -r ./Debug-iphoneos/*.app ./ipa-build/Payload/
+cp -r ./${configurationModel}-iphoneos/*.app ./ipa-build/Payload/
 
 cd ipa-build
 
